@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CollectionRepository;
+use App\Repository\SeasonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection as DoctrineCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CollectionRepository::class)]
-class Collection
+#[ORM\Entity(repositoryClass: SeasonRepository::class)]
+class Season
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,7 +18,7 @@ class Collection
     #[ORM\Column(length: 50)]
     private string $name;
 
-    #[ORM\OneToMany(mappedBy: 'collection', targetEntity: Product::class)]
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: Product::class)]
     private DoctrineCollection $products;
 
     public function __construct()

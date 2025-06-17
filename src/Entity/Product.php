@@ -38,7 +38,11 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Collection $collection = null;
+    private ?Season $season = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     public function getId(): ?int { return $this->id; }
 
@@ -92,11 +96,19 @@ class Product
         return $this;
     }
 
-    public function getCollection(): Collection { return $this->collection; }
+    public function getSeason(): Season { return $this->season; }
 
-    public function setCollection(Collection $collection): self
+    public function setSeason(Season $season): self
     {
-        $this->collection = $collection;
+        $this->season = $season;
+        return $this;
+    }
+
+    public function getCategory(): Category { return $this->category; }
+
+    public function setCategory(Category $category): self
+    {
+        $this->category = $category;
         return $this;
     }
 

@@ -2,14 +2,14 @@
 
 namespace App\Repository;
 
-use App\Entity\Collection;
+use App\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class CollectionRepository extends ServiceEntityRepository
+class SeasonRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Collection::class);
+        parent::__construct($registry, Season::class);
     }
 }
