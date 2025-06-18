@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StockRepository::class)]
-#[ORM\UniqueConstraint(name: 'stock_unique', columns: ['product_id', 'location_id'])]
+#[ORM\UniqueConstraint(name: 'stock_unique', columns: ['product_id', 'location_id', 'size'])]
 class Stock
 {
     #[ORM\Id]
@@ -24,10 +24,13 @@ class Stock
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $size = null;
+
     #[ORM\Column]
     private int $quantity = 0;
 
-    #[ORM\OneToMany(mappedBy: 'stock', targetEntity: StockMovement::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'stock', targetEntity: StockMovement::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $movements;
 
     public function __construct()
@@ -62,6 +65,17 @@ class Stock
         return $this;
     }
 
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function setSize(string $size): static
+    {
+        $this->size = $size;
+        return $this;
+    }
+
     public function getQuantity(): int
     {
         return $this->quantity;
@@ -88,5 +102,22 @@ class Stock
     public function getMovements(): Collection
     {
         return $this->movements;
+    }
+
+    public function addMovement(StockMovement $movement): static
+    {
+        if (!$this->movements->contains($movement)) {
+            $this->movements->add($movement);
+            $movement->setStock($this);
+        }
+        return $this;
+    }
+
+    public function removeMovement(StockMovement $movement): static
+    {
+        if ($this->movements->removeElement($movement) && $movement->getStock() === $this) {
+            $movement->setStock(null);
+        }
+        return $this;
     }
 }

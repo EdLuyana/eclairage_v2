@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SeasonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection as DoctrineCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SeasonRepository::class)]
@@ -18,8 +18,8 @@ class Season
     #[ORM\Column(length: 50)]
     private string $name;
 
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: Product::class)]
-    private DoctrineCollection $products;
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: Product::class, orphanRemoval: true)]
+    private Collection $products;
 
     public function __construct()
     {
@@ -30,14 +30,28 @@ class Season
 
     public function getName(): string { return $this->name; }
 
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
 
-    public function getProducts(): DoctrineCollection
+    public function getProducts(): Collection { return $this->products; }
+
+    public function addProduct(Product $product): static
     {
-        return $this->products;
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setSeason($this);
+        }
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product) && $product->getSeason() === $this) {
+            $product->setSeason(null);
+        }
+        return $this;
     }
 }
