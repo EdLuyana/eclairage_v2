@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -43,6 +45,19 @@ class Product
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Stock::class)]
+    private Collection $stocks;
+
+    public function __construct()
+    {
+        $this->stocks = new ArrayCollection();
+    }
+
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
 
     public function getId(): ?int { return $this->id; }
 
@@ -88,7 +103,7 @@ class Product
         return $this;
     }
 
-    public function getSupplier(): Supplier { return $this->supplier; }
+    public function getSupplier(): ?Supplier { return $this->supplier; }
 
     public function setSupplier(Supplier $supplier): self
     {
@@ -96,7 +111,7 @@ class Product
         return $this;
     }
 
-    public function getSeason(): Season { return $this->season; }
+    public function getSeason(): ?Season { return $this->season; }
 
     public function setSeason(Season $season): self
     {
@@ -104,7 +119,7 @@ class Product
         return $this;
     }
 
-    public function getCategory(): Category { return $this->category; }
+    public function getCategory(): ?Category { return $this->category; }
 
     public function setCategory(Category $category): self
     {
